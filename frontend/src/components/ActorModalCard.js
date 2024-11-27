@@ -8,6 +8,12 @@ import {
   NPlaylistLargeImageCard,
   Text,
 } from "@d7lab/bx-components-react";
+import {
+  fetchAPI,
+  fetchExtendedAPI,
+  getActorDataById,
+  getExtendedDataById,
+} from "../utils/api";
 
 export const ActorModalCard = () => {
   // どのAPIのレスポンスを持っているか、Modalを表示するかなどを管理するためにuseStateでstateを作成します。
@@ -15,30 +21,6 @@ export const ActorModalCard = () => {
   const [extendedByNpgId, setExtendedByNpgId] = useState([]); // npgIdで検索した結果を管理する
   const [openModal, setOpenModal] = useState(false); // Modalを表示するか否かを管理するstate
   const [selectedActorId, setSelectedActorId] = useState(null); // どこのActorCardがclickされたかを管理するstate
-
-  // APIを取得する関数
-  const fetchAPI = async (url, callback) => {
-    try {
-      const res = await fetch(url);
-      const data = await res.json();
-      callback(data);
-      console.log(data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
-  // 検索API用の関数
-  const fetchExtendedAPI = async (url, callback, list = null, query) => {
-    try {
-      const res = await fetch(url);
-      const data = await res.json();
-      callback((prevList) => [...prevList, { id: query, data: data }]);
-      console.log(data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
 
   // APIを取得する関数の実行
   useEffect(() => {
@@ -70,31 +52,6 @@ export const ActorModalCard = () => {
       });
     }
   }, [nplaylistInfo]);
-
-  // idを指定してactor[]からpersonまたはorganizationを取得する関数
-  function getActorDataById(actorArray, targetId) {
-    for (const actorItem of actorArray) {
-      if (
-        actorItem.person &&
-        actorItem.person.identifierGroup.npgId === targetId
-      ) {
-        return actorItem;
-      }
-      if (
-        actorItem.organization &&
-        actorItem.organization.identifierGroup.npgId === targetId
-      ) {
-        return actorItem.organization;
-      }
-    }
-    return null;
-  }
-
-  // extendedByNpgIdから対象のidを取得する関数
-  function getExtendedDataById(listOfObjects, id) {
-    const foundObject = listOfObjects.find((obj) => obj.id === id);
-    return foundObject ? foundObject.data : null;
-  }
 
   // 画面上に表示するActorCardのリスト
   return (
