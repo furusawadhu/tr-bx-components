@@ -41,7 +41,7 @@ export function getActorDataById(actorArray, targetId) {
   return null;
 }
 
-// extendedByNpgIdから対象のidを取得する関数
+// オブジェクトのリストからidを指定してデータを取得する関数
 export function getExtendedDataById(listOfObjects, id) {
   const foundObject = listOfObjects.find((obj) => obj.id === id);
   return foundObject ? foundObject.data : null;
